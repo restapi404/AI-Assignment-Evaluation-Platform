@@ -1,0 +1,773 @@
+/* ---------------------------------------------------------------------
+   Design tokens
+   Subject: graded handwritten notebook paper. The visual identity comes
+   directly from the source material - ruled lines, a red vertical margin
+   rule, and grades marked in red ink stamps - rather than a generic
+   dashboard look.
+--------------------------------------------------------------------- */
+:root {
+  --paper: #efece1;
+  --paper-card: #f8f6ee;
+  --ink: #1d2b4f;
+  --ink-soft: #45507a;
+  --graphite: #5b5850;
+  --rule-blue: #a9bedc;
+  --red-pen: #b23a2e;
+  --red-pen-soft: #e9cfc9;
+  --pass-green: #2f6b3a;
+  --amber: #96660f;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --radius: 10px;
+  --shadow-card: 0 1px 2px rgba(29, 43, 79, 0.06), 0 6px 18px rgba(29, 43, 79, 0.07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-body);
+  background-color: var(--paper);
+  /* Ruled-paper texture: faint horizontal lines behind everything. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    rgba(169, 190, 220, 0.55) 27px,
+    rgba(169, 190, 220, 0.55) 28px
+  );
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  /* Red vertical margin rule, like a school notebook page. */
+  padding-left: 56px;
+}
+
+.app-shell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 40px;
+  width: 1.5px;
+  background: rgba(178, 58, 46, 0.45);
+}
+
+.app-main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 20px 100px 28px;
+}
+
+/* --- Top bar ----------------------------------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 20px 20px 28px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.wordmark .wordmark-underline {
+  display: block;
+  height: 3px;
+  width: 34px;
+  background: var(--red-pen);
+  margin-top: 2px;
+  border-radius: 2px;
+}
+
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.nav-back:hover {
+  color: var(--red-pen);
+}
+
+.tab-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tab-link {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--graphite);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-link:hover {
+  color: var(--ink);
+}
+
+.tab-link-active {
+  color: var(--red-pen);
+  border-bottom-color: var(--red-pen);
+}
+
+/* --- Login --------------------------------------------------------------- */
+
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 340px;
+}
+
+/* --- Dashboard stats ------------------------------------------------------ */
+
+.stat-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  margin-bottom: 0;
+}
+
+.stat-number {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--red-pen);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--graphite);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* --- Headings ------------------------------------------------------------ */
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: 1.7rem;
+  margin: 4px 0 6px;
+}
+
+h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  color: var(--graphite);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  margin-top: 0;
+}
+
+/* --- Cards ---------------------------------------------------------------- */
+
+.card {
+  background: var(--paper-card);
+  border: 1px solid rgba(29, 43, 79, 0.1);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 26px 28px;
+  margin-bottom: 24px;
+}
+
+/* --- Forms ------------------------------------------------------------- */
+
+label {
+  display: block;
+  margin-bottom: 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 9px 11px;
+  border: 1px solid rgba(29, 43, 79, 0.25);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: normal;
+  color: var(--ink);
+  background: #fff;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: 2px solid var(--red-pen);
+  outline-offset: 1px;
+}
+
+input[type="file"] {
+  margin-top: 6px;
+  font-weight: normal;
+  font-family: var(--font-body);
+}
+
+.hint {
+  font-size: 0.83rem;
+  color: var(--graphite);
+  margin-top: -8px;
+  line-height: 1.5;
+}
+
+.error {
+  color: var(--red-pen);
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+button {
+  background: var(--red-pen);
+  color: #fff8f5;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+button:hover:not(:disabled) {
+  background: #9a3126;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  background: #c9c4b6;
+  color: #7a7669;
+  cursor: not-allowed;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--red-pen);
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid var(--red-pen);
+  outline-offset: 2px;
+}
+
+.reset-btn {
+  display: block;
+  margin: 12px auto 0;
+}
+
+/* --- Tables --------------------------------------------------------------- */
+
+.rows-table,
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.92rem;
+  font-family: var(--font-body);
+}
+
+.rows-table th,
+.results-table th {
+  text-align: left;
+  padding: 6px 8px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--graphite);
+  border-bottom: 1.5px solid rgba(29, 43, 79, 0.18);
+}
+
+.rows-table td,
+.results-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(29, 43, 79, 0.1);
+  vertical-align: middle;
+}
+
+.muted {
+  color: var(--graphite);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+
+/* --- Score stamp ------------------------------------------------------- */
+/* The signature element: each student's accuracy shown as a rotated,
+   double-ringed ink stamp, like a teacher marking a returned paper. */
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.82rem;
+  transform: rotate(-6deg);
+  background: transparent;
+}
+
+.stamp-empty {
+  border-style: dashed;
+  color: var(--graphite);
+  opacity: 0.6;
+  font-size: 0.68rem;
+}
+
+/* --- Detail panel --------------------------------------------------------- */
+
+.detail-panel {
+  background: #fbfaf4;
+  border: 1px dashed rgba(29, 43, 79, 0.2);
+  border-radius: 8px;
+  padding: 16px 18px;
+  font-size: 0.92rem;
+}
+
+.detail-panel strong {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  display: block;
+  margin-top: 14px;
+}
+
+.detail-panel strong:first-child {
+  margin-top: 0;
+}
+
+.detail-panel ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.detail-panel li {
+  margin-bottom: 4px;
+}
+
+.extracted-text {
+  white-space: pre-wrap;
+  background: #fff;
+  border: 1px solid rgba(29, 43, 79, 0.12);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 6px 0 0;
+  font-family: var(--font-body);
+}
+
+.point-covered::before {
+  content: "✓ ";
+  color: var(--pass-green);
+  font-weight: 700;
+}
+
+.point-missing::before {
+  content: "✗ ";
+  color: var(--red-pen);
+  font-weight: 700;
+}
+
+.diff-line {
+  line-height: 1.9;
+  font-family: var(--font-body);
+}
+
+.diff-match {
+  color: var(--ink);
+}
+
+.diff-sub {
+  background: #f5e3a8;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+.diff-missing {
+  background: var(--red-pen-soft);
+  color: var(--red-pen);
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+.diff-extra {
+  background: #dbe7f4;
+  color: #2a5788;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+/* --- Home / assignment list ---------------------------------------------- */
+
+.assignment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.assignment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 4px;
+  border-bottom: 1px solid rgba(29, 43, 79, 0.12);
+  cursor: pointer;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.assignment-row:last-child {
+  border-bottom: none;
+}
+
+.assignment-row:hover .assignment-topic {
+  color: var(--red-pen);
+}
+
+.assignment-topic {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.12s ease;
+}
+
+.assignment-meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--graphite);
+}
+
+.empty-state p {
+  margin-bottom: 20px;
+  font-size: 0.98rem;
+}
+
+/* --- Responsive ------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  .app-shell {
+    padding-left: 28px;
+  }
+  .app-shell::before {
+    left: 16px;
+  }
+  .app-main,
+  .topbar {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .card {
+    padding: 18px 16px;
+  }
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3) {
+    display: none; /* hide word/char breakdown column on very small screens */
+  }
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .tab-nav {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .stat-row {
+    flex-direction: column;
+  }
+}
+
+/* --- Danger / destructive actions ---------------------------------------- */
+
+.danger-link {
+  color: var(--red-pen);
+  cursor: pointer;
+}
+
+.danger-link:hover {
+  color: #8a291f;
+}
+
+/* --- Results header (title + edit/re-grade/delete actions) --------------- */
+
+.results-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.results-header-actions {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+
+/* --- Assignment row with meta + delete action -------------------------- */
+
+.assignment-row-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* --- Clickable dashboard stat card --------------------------------------- */
+
+.stat-card-clickable {
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.stat-card-clickable:hover {
+  box-shadow: 0 1px 2px rgba(29, 43, 79, 0.08), 0 8px 22px rgba(29, 43, 79, 0.12);
+}
+
+/* --- Activity feed --------------------------------------------------------- */
+
+.activity-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 4px;
+  border-bottom: 1px solid rgba(29, 43, 79, 0.1);
+  border-left: 3px solid var(--rule-blue);
+  padding-left: 12px;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-assignment_deleted,
+.activity-student_deleted {
+  border-left-color: var(--red-pen);
+}
+
+.activity-assignment_created,
+.activity-students_added {
+  border-left-color: var(--pass-green);
+}
+
+.activity-text {
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.activity-time {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+
+/* --- Image lightbox -------------------------------------------------------- */
+
+.image-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 24, 20, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: min(90vw, 800px);
+  max-height: 90vh;
+}
+
+.image-modal-img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+/* --- Detail panel source tabs (Google vs Sarvam) --------------------------- */
+
+.detail-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(29, 43, 79, 0.15);
+}
+
+.detail-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--graphite);
+  cursor: pointer;
+}
+
+.detail-tab:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.detail-tab:disabled {
+  color: #b5b1a4;
+  cursor: not-allowed;
+}
+
+.detail-tab-active {
+  color: var(--red-pen);
+  border-bottom-color: var(--red-pen);
+}
+
+.source-detail-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.source-detail-heading strong {
+  margin-top: 0;
+}

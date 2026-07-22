@@ -1,0 +1,21 @@
+{
+  "name": "handwriting-accuracy-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OCR + accuracy scoring backend for the handwritten-assignment grading tool (Sarvam Vision + Google Cloud Vision)",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "adm-zip": "^0.5.16",
+    "archiver": "^7.0.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "multer": "^2.2.0"
+  }
+}
