@@ -1,5 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
+import rateLimit from "express-rate-limit";
 import {
   createAssignment,
   getAssignment,
@@ -21,8 +22,38 @@ import { gradeSemantically } from "../services/semanticGrader.js";
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 15 * 1024 * 1024 } });
 const router = Router();
 
+// ── Upload safety ────────────────────────────────────────────────────────────
+// Rate limit: caps how many upload requests a single IP can make per minute,
+// protecting the OCR/semantic-grading pipeline (and the Google Vision / Sarvam
+// API quotas behind it) from abuse.
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many uploads. Please wait a minute and try again." },
+});
+
+// File-type validation: multer's fileSize limit alone doesn't stop someone
+// from uploading a non-image file. This checks the MIME type reported for
+// every file (single or array) before any OCR/grading work is done on it.
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+function validateFileTypes(req, res, next) {
+  const files = req.files || (req.file ? [req.file] : []);
+  for (const f of files) {
+    if (!ALLOWED_MIME_TYPES.includes(f.mimetype)) {
+      return res.status(400).json({
+        error: `Unsupported file type: ${f.mimetype}. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}`,
+      });
+    }
+  }
+  next();
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // --- Create a new assignment ------------------------------------------------
-router.post("/", upload.single("correctAnswerImage"), async (req, res) => {
+router.post("/", uploadLimiter, upload.single("correctAnswerImage"), validateFileTypes, async (req, res) => {
   try {
     const { topic, correctAnswerText } = req.body;
     if (!topic) return res.status(400).json({ error: "topic is required" });
@@ -150,7 +181,7 @@ router.post("/:id/regrade", async (req, res) => {
 });
 
 // --- Upload up to 10 student scans in one go --------------------------------
-router.post("/:id/students", upload.array("photos", 10), async (req, res) => {
+router.post("/:id/students", uploadLimiter, upload.array("photos", 10), validateFileTypes, async (req, res) => {
   try {
     const assignment = await getAssignment(req.params.id);
     if (!assignment) return res.status(404).json({ error: "Assignment not found" });
