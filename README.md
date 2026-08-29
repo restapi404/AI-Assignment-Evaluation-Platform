@@ -17,33 +17,28 @@ Developed as part of an internship project at Resileo Labs.
 - Assignment history and result persistence
 - Supabase Storage integration for scanned answer sheets
 - Re-grade submissions after updating the answer key
+- Rate limiting (10 uploads/minute per IP) and file-type validation on both upload endpoints
 
 ---
 
 ## Screenshots
 
 ### Home Screen
-
 ![Home Screen](frontend/screenshots/home.png)
 
 ### Create Assignment
-
 ![Create Assignment](frontend/screenshots/create.png)
 
 ### Upload Student Assignments
-
 ![Upload Students](frontend/screenshots/upload.png)
 
 ### Results Dashboard
-
 ![Results](frontend/screenshots/result.png)
 
 ### Google OCR Evaluation
-
 ![Google OCR Result](frontend/screenshots/ocr_result.png)
 
 ### Sarvam AI Evaluation
-
 ![Sarvam AI Result](frontend/screenshots/sarvam_result.png)
 
 ---
@@ -58,6 +53,7 @@ Developed as part of an internship project at Resileo Labs.
 ### Backend
 - Node.js
 - Express.js
+- express-rate-limit (upload throttling)
 
 ### Database & Storage
 - PostgreSQL
@@ -75,6 +71,8 @@ Developed as part of an internship project at Resileo Labs.
 ```text
 Assignment Upload
         ↓
+Rate limit + file-type check
+        ↓
 Google Vision OCR
         ↓
 Text Processing
@@ -85,6 +83,20 @@ Accuracy Score Generation
         ↓
 Result Storage in Supabase
 ```
+
+---
+
+## Upload Security
+
+Both upload endpoints — `POST /` (correct-answer image) and
+`POST /:id/students` (student scans) — are protected by:
+
+- **Rate limiting**: capped at 10 upload requests per minute per IP
+  (`express-rate-limit`), protecting the Google Vision OCR and Sarvam AI
+  API quotas from abuse.
+- **File-type validation**: only `image/jpeg`, `image/png`, and
+  `image/webp` are accepted. This sits alongside Multer's existing 15MB
+  size limit, rejecting anything else before any OCR or grading work runs.
 
 ---
 
@@ -163,7 +175,7 @@ The frontend proxies `/api` requests to the backend during development.
 ```text
 AI-Assignment-Evaluation-Platform/
 │
-├── backend/                  # Express API, OCR, grading, storage
+├── backend/                  # Express API, OCR, grading, storage, rate limiting
 ├── frontend/                 # React + Vite application
 │
 ├── frontend/screenshots/
@@ -216,13 +228,13 @@ VITE_API_BASE=https://your-backend-url.com npm run build
 - The application currently supports a maximum of 10 student submissions per assignment.
 - Results are stored in Supabase for future review and performance tracking.
 - Assignment scores are based on semantic understanding and key-point coverage rather than exact word matching.
+- Upload endpoints are rate-limited and validate file type before processing.
 
 ---
 
 ## Useful Commands
 
 ### Backend
-
 ```bash
 cd backend
 npm install
@@ -230,7 +242,6 @@ npm run dev
 ```
 
 ### Frontend
-
 ```bash
 cd frontend
 npm install
@@ -242,9 +253,7 @@ npm run dev
 ## Author
 
 **Rithu Prabhu**
-
 GitHub: https://github.com/restapi404
-
 Internship Project @ Resileo Labs
 
 ---
